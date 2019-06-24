@@ -51,8 +51,7 @@ public class Condiment implements Comparable<Condiment> {
 
 	@Override
 	public String toString() {
-		return condiment_id + " - "+ display_name + " ("
-				+ condiment_calories + " cal)";
+		return display_name;
 	}
 
 	@Override
@@ -82,7 +81,7 @@ public class Condiment implements Comparable<Condiment> {
 
 	@Override
 	public int compareTo(Condiment o) {
-		return (int) (this.condiment_calories - o.condiment_calories);
+		return (int) (o.condiment_calories - this.condiment_calories);
 	}
 	
 }

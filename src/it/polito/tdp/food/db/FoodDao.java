@@ -14,14 +14,16 @@ import it.polito.tdp.food.model.Food;
 
 public class FoodDao {
 
-	public List<Food> listAllFood(){
-		String sql = "SELECT * FROM food" ;
+	public List<Food> listAllFood() {
+		
+		String sql = "SELECT * FROM food";
+		
+		List<Food> list = new ArrayList<>();
+		
 		try {
 			Connection conn = DBConnect.getConnection() ;
 
 			PreparedStatement st = conn.prepareStatement(sql) ;
-			
-			List<Food> list = new ArrayList<>() ;
 			
 			ResultSet res = st.executeQuery() ;
 			
@@ -41,21 +43,20 @@ public class FoodDao {
 			}
 			
 			conn.close();
-			return list ;
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return null ;
 		}
 
+		return list;
 	}
 	
 	
 	public List<Condiment> listCondiment(double calorieMax, Map<Integer, Condiment> idMap) {
 		
-		String sql = "SELECT * FROM condiment WHERE condiment_calories < ?" ;
-		List<Condiment> list = new ArrayList<>() ;
+		String sql = "SELECT * FROM condiment WHERE condiment_calories < ?";
+		
+		List<Condiment> list = new ArrayList<>();
 		
 		try {
 			Connection conn = DBConnect.getConnection() ;
@@ -67,8 +68,8 @@ public class FoodDao {
 				Condiment c = new Condiment(res.getInt("condiment_id"), res.getInt("food_code"), res.getString("display_name"), 
 						                     res.getString("condiment_portion_size"), res.getDouble("condiment_calories") );
 				
-				if ( !idMap.containsKey(c.getCondiment_id()) )
-					idMap.put(c.getCondiment_id(), c);
+				if ( !idMap.containsKey(c.getFood_code()) )
+					idMap.put(c.getFood_code(), c);
 				
 				list.add(c);
 				
@@ -99,7 +100,8 @@ public class FoodDao {
 			ResultSet res = st.executeQuery() ;
 			
 			while(res.next()) {
-				list.add( new Adiacenti(res.getInt("ing1"), res.getInt("ing2"), res.getInt("cont")) );
+				if ( res.getInt("cont") > 0 ) 
+					list.add( new Adiacenti(res.getInt("ing1"), res.getInt("ing2"), res.getInt("cont")) );
 			}
 			
 			conn.close();

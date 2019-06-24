@@ -3,6 +3,7 @@ package it.polito.tdp.food;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.food.model.Condiment;
 import it.polito.tdp.food.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -32,32 +33,43 @@ public class FoodController {
     private Button btnCreaGrafo; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxIngrediente"
-    private ComboBox<?> boxIngrediente; // Value injected by FXMLLoader
+    private ComboBox<Condiment> boxIngrediente; // Value injected by FXMLLoader
 
     @FXML // fx:id="btnDietaEquilibrata"
     private Button btnDietaEquilibrata; // Value injected by FXMLLoader
     
     @FXML
     private TextArea txtResult;
-
+    
     @FXML
-    void doCalcolaDieta(ActionEvent event) {
+    void doCreaGrafo(ActionEvent event) {
     	double calorie;
     	
     	try {
     	      calorie = Double.parseDouble(txtCalorie.getText().trim());
     	} catch(NumberFormatException nfe) {
-    	      txtResult.setText("Devi inserire un numero intero!");
+    	      txtResult.setText("Devi inserire un numero reale!");
     	      return ;
     	}
 
     	model.creaGrafo(calorie);
     	txtResult.setText(model.visualizza());
+    	boxIngrediente.getItems().addAll(model.getIngredienti());
     }
 
     @FXML
-    void doCreaGrafo(ActionEvent event) {
-
+    void doCalcolaDieta(ActionEvent event) {
+    	Condiment scelto;
+    	
+    	if ( boxIngrediente.getValue() == null ) {
+    		txtResult.setText("Devi selezionare un Ingrediente!");
+    		return ;
+    	} else 
+    		scelto = boxIngrediente.getValue();
+    	
+    	txtResult.setText("Lista di Ingredienti:\n");
+    	for ( Condiment c: model.calcolaDieta(scelto) )
+    		txtResult.appendText(c+"\n");
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
